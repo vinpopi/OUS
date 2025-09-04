@@ -1,0 +1,46 @@
+-- Users table
+create table if not exists users (
+  id uuid primary key default gen_random_uuid(),
+  email text unique not null,
+  full_name text,
+  created_at timestamp with time zone default now()
+);
+
+-- Jobs table
+create table if not exists jobs (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  description text,
+  user_id uuid references users (id) on delete cascade,
+  created_at timestamp with time zone default now()
+);
+
+-- Add Row Level Security (RLS)
+alter table users enable row level security;
+alter table jobs enable row level security;
+
+-- Policies for users
+create policy "Users can view their own profile"
+  on users for select
+  using (auth.uid() = id);
+
+create policy "Users can update their own profile"
+  on users for update
+  using (auth.uid() = id);
+
+-- Policies for jobs
+create policy "Anyone can view jobs"
+  on jobs for select
+  using (true);
+
+create policy "Users can insert their own jobs"
+  on jobs for insert
+  with check (auth.uid() = user_id);
+
+create policy "Users can update their own jobs"
+  on jobs for update
+  using (auth.uid() = user_id);
+
+create policy "Users can delete their own jobs"
+  on jobs for delete
+  using (auth.uid() = user_id);
