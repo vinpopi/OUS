@@ -5,8 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Hustle Finder</title>
   </head>
-  <body>
+  <body><button onclick="testSupabase()">Test Supabase</button>
+<p id="result"></p>
+
+<script>
+  async function testSupabase() {
+    const { data, error } = await supabase.from("users").select("*").limit(1);
+
+    if (error) {
+      document.getElementById("result").innerText = "❌ Error: " + error.message;
+    } else {
+      document.getElementById("result").innerText =
+        "✅ Connected! Found " + data.length + " user(s)";
+    }
+  }
+</script>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <script type="module" src="/src/main.jsx"></script><!-- Supabase CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const supabase = window.supabase.createClient(
+    "https://cfjrrhsiypppphztadjm.supabase.co",  // Your Supabase project URL
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmanJyaHNpeXBwcHBoenRhZGptIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY5ODY5OTQsImV4cCI6MjA3MjU2Mjk5NH0.dBzbSnxSs_kH8wfvefr1PC-0sN3Nt2IatzA0MgNUvmY"
+  );
+</script>
   </body>
 </html>
